@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Special Message For You</title>
+    <style>
+        :root {
+            --pink: #ffafcc;
+            --dark-pink: #fb6f92;
+            --bg-color: #ffe5ec;
+        }
+
+        /* Essential for mobile: prevents accidental zooming and scrolling */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; 
+            touch-action: none; 
+            background-color: var(--bg-color);
+            font-family: 'Georgia', serif;
+        }
+
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            background: white;
+            padding: 40px 20px;
+            border-radius: 25px;
+            box-shadow: 0 10px 25px rgba(251, 111, 146, 0.15);
+            text-align: center;
+            z-index: 1;
+        }
+
+        /* The "Meow" Layer */
+        .meow-layer {
+            font-size: 22px;
+            color: var(--dark-pink);
+            line-height: 1.8;
+            user-select: none;
+        }
+
+        /* The Reveal Layer (Sharp & Hidden) */
+        #revealed-text {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #fff0f3;
+            color: #c9184a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 9;
+            /* Hidden by default until first touch */
+            clip-path: circle(0px at 0% 0%);
+            transition: clip-path 0.1s ease-out;
+        }
+
+        .secret-content {
+            width: 85%;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            line-height: 1.6;
+        }
+
+        /* The Visual Lens (Centered on finger) */
+        #lens-frame {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border: 5px solid var(--dark-pink);
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            z-index: 10;
+            display: none; /* Only show when touching */
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .instruction {
+            position: fixed;
+            bottom: 40px;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            color: #fb6f92;
+            font-style: italic;
+            z-index: 2;
+        }
+
+        .cat-emoji { font-size: 40px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="cat-emoji">🐱</div>
+        <div class="meow-layer">
+            meow meow meowww, meow meow! <br>
+            meow meow, meow meow meowww meow. <br>
+            meow meow? meow! ❤️
+        </div>
+    </div>
+
+    <div id="revealed-text">
+        <div class="secret-content">
+            <div class="cat-emoji">😻</div>
+            I've loved you since the first meow... <br>
+            You're the purr-fect person for me. <br>
+            Will you be mine?
+        </div>
+    </div>
+
+    <div id="lens-frame"></div>
+    <div class="instruction">Tap and drag to decode the meows...</div>
+
+    <script>
+        const lens = document.getElementById('lens-frame');
+        const reveal = document.getElementById('revealed-text');
+
+        function updatePosition(e) {
+            // Get coordinates from first touch
+            const touch = e.touches[0];
+            const x = touch.clientX;
+            const y = touch.clientY;
+
+            // Show lens and reveal effect
+            lens.style.display = 'block';
+            
+            // Move Lens (Offset by half its width/height to center on finger)
+            lens.style.left = (x - 70) + 'px';
+            lens.style.top = (y - 70) + 'px';
+
+            // Update Secret Clipping
+            reveal.style.clipPath = `circle(70px at ${x}px ${y}px)`;
+            
+            // Prevent page from scrolling
+            e.preventDefault();
+        }
+
+        // Add Touch Listeners
+        document.addEventListener('touchstart', updatePosition, { passive: false });
+        document.addEventListener('touchmove', updatePosition, { passive: false });
+        
+        // Hide lens when touch ends
+        document.addEventListener('touchend', () => {
+            lens.style.display = 'none';
+            reveal.style.clipPath = `circle(0px at 0% 0%)`;
+        });
+    </script>
+</body>
+</html>
