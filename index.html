@@ -9,7 +9,8 @@
             --pink: #ffafcc;
             --dark-pink: #fb6f92;
             --bg-color: #ffe5ec;
-            --lens-size: 180px; 
+            /* Lens is now 100px wide (50px radius) */
+            --lens-size: 100px; 
         }
 
         html, body {
@@ -23,7 +24,6 @@
             font-family: 'Segoe UI', sans-serif;
         }
 
-        /* The Main Card */
         .container {
             position: absolute;
             top: 50%;
@@ -39,14 +39,13 @@
         }
 
         .meow-layer {
-            font-size: 22px;
+            font-size: 20px;
             color: var(--dark-pink);
             line-height: 2;
             user-select: none;
             font-weight: bold;
         }
 
-        /* The Secret Message (Hidden by default) */
         #revealed-text {
             position: fixed;
             top: 0;
@@ -66,31 +65,29 @@
         .secret-content {
             width: 80%;
             text-align: center;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: bold;
             line-height: 1.6;
         }
 
-        /* The "Glass" Lens */
         #lens-frame {
             position: absolute;
             width: var(--lens-size);
             height: var(--lens-size);
-            border: 6px solid var(--dark-pink);
+            border: 4px solid var(--dark-pink);
             border-radius: 50%;
             pointer-events: none;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             z-index: 10;
             display: none;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
         }
 
-        /* Visual Feedback for where the finger is touching */
         #finger-pointer {
             position: absolute;
-            width: 20px;
-            height: 20px;
-            background: rgba(251, 111, 146, 0.4);
+            width: 15px;
+            height: 15px;
+            background: rgba(251, 111, 146, 0.3);
             border-radius: 50%;
             z-index: 5;
             display: none;
@@ -102,13 +99,13 @@
             bottom: 30px;
             width: 100%;
             text-align: center;
-            font-size: 14px;
+            font-size: 13px;
             color: #fb6f92;
             font-weight: bold;
-            opacity: 0.8;
+            text-transform: uppercase;
         }
 
-        .cat-emoji { font-size: 45px; margin-bottom: 10px; }
+        .cat-emoji { font-size: 40px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -132,51 +129,45 @@
     </div>
 
     <div id="lens-frame"></div>
-    
     <div id="finger-pointer"></div>
 
-    <div class="instruction">DRAG YOUR FINGER TO DECODE</div>
+    <div class="instruction">Hold and drag to decode</div>
 
     <script>
         const lens = document.getElementById('lens-frame');
         const reveal = document.getElementById('revealed-text');
         const pointer = document.getElementById('finger-pointer');
         
-        const lensRadius = 50; // Half of 180px
-        const verticalOffset = 120; // Distance ABOVE the finger
+        // As requested:
+        const lensRadius = 50; 
+        // Adjusted vertical offset for a smaller lens:
+        const verticalOffset = 100; 
 
         function handleMove(e) {
             const touch = e.touches ? e.touches[0] : e;
             const fingerX = touch.clientX;
             const fingerY = touch.clientY;
 
-            // Target coordinates for the lens (Move it up)
             const lensX = fingerX;
             const lensY = fingerY - verticalOffset;
 
-            // Show elements
             lens.style.display = 'block';
             pointer.style.display = 'block';
             
-            // Move the small pointer to where the finger is
-            pointer.style.left = (fingerX - 10) + 'px';
-            pointer.style.top = (fingerY - 10) + 'px';
+            pointer.style.left = (fingerX - 7.5) + 'px';
+            pointer.style.top = (fingerY - 7.5) + 'px';
 
-            // Move the lens frame to the offset position
             lens.style.left = (lensX - lensRadius) + 'px';
             lens.style.top = (lensY - lensRadius) + 'px';
 
-            // Reveal the secret text at the offset position
             reveal.style.clipPath = `circle(${lensRadius}px at ${lensX}px ${lensY}px)`;
             
             if(e.touches) e.preventDefault();
         }
 
-        // Event listeners for mobile touch
         document.addEventListener('touchstart', handleMove, { passive: false });
         document.addEventListener('touchmove', handleMove, { passive: false });
         
-        // Cleanup when finger is lifted
         document.addEventListener('touchend', () => {
             lens.style.display = 'none';
             pointer.style.display = 'none';
