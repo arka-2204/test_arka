@@ -9,9 +9,9 @@
             --pink: #ffafcc;
             --dark-pink: #fb6f92;
             --bg-color: #ffe5ec;
+            --lens-size: 180px; 
         }
 
-        /* Essential for mobile: prevents accidental zooming and scrolling */
         html, body {
             margin: 0;
             padding: 0;
@@ -20,9 +20,10 @@
             overflow: hidden; 
             touch-action: none; 
             background-color: var(--bg-color);
-            font-family: 'Georgia', serif;
+            font-family: 'Segoe UI', sans-serif;
         }
 
+        /* The Main Card */
         .container {
             position: absolute;
             top: 50%;
@@ -31,129 +32,154 @@
             width: 85%;
             background: white;
             padding: 40px 20px;
-            border-radius: 25px;
-            box-shadow: 0 10px 25px rgba(251, 111, 146, 0.15);
+            border-radius: 30px;
+            box-shadow: 0 15px 30px rgba(251, 111, 146, 0.2);
             text-align: center;
             z-index: 1;
         }
 
-        /* The "Meow" Layer */
         .meow-layer {
             font-size: 22px;
             color: var(--dark-pink);
-            line-height: 1.8;
+            line-height: 2;
             user-select: none;
+            font-weight: bold;
         }
 
-        /* The Reveal Layer (Sharp & Hidden) */
+        /* The Secret Message (Hidden by default) */
         #revealed-text {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: #fff0f3;
+            background-color: #fff;
             color: #c9184a;
             display: flex;
             justify-content: center;
             align-items: center;
             pointer-events: none;
             z-index: 9;
-            /* Hidden by default until first touch */
             clip-path: circle(0px at 0% 0%);
-            transition: clip-path 0.1s ease-out;
         }
 
         .secret-content {
-            width: 85%;
+            width: 80%;
             text-align: center;
             font-size: 24px;
             font-weight: bold;
             line-height: 1.6;
         }
 
-        /* The Visual Lens (Centered on finger) */
+        /* The "Glass" Lens */
         #lens-frame {
             position: absolute;
-            width: 140px;
-            height: 140px;
-            border: 5px solid var(--dark-pink);
+            width: var(--lens-size);
+            height: var(--lens-size);
+            border: 6px solid var(--dark-pink);
             border-radius: 50%;
             pointer-events: none;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             z-index: 10;
-            display: none; /* Only show when touching */
-            background: rgba(255, 255, 255, 0.05);
+            display: none;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Visual Feedback for where the finger is touching */
+        #finger-pointer {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(251, 111, 146, 0.4);
+            border-radius: 50%;
+            z-index: 5;
+            display: none;
+            pointer-events: none;
         }
 
         .instruction {
             position: fixed;
-            bottom: 40px;
+            bottom: 30px;
             width: 100%;
             text-align: center;
             font-size: 14px;
             color: #fb6f92;
-            font-style: italic;
-            z-index: 2;
+            font-weight: bold;
+            opacity: 0.8;
         }
 
-        .cat-emoji { font-size: 40px; margin-bottom: 10px; }
+        .cat-emoji { font-size: 45px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="cat-emoji">🐱</div>
+        <div class="cat-emoji">🐾</div>
         <div class="meow-layer">
-            meow meow meowww, meow meow! <br>
-            meow meow, meow meow meowww meow. <br>
-            meow meow? meow! ❤️
+            meow meow meowww! <br>
+            meow meow meow meow. <br>
+            meow meow meow? ❤️
         </div>
     </div>
 
     <div id="revealed-text">
         <div class="secret-content">
             <div class="cat-emoji">😻</div>
-            I've loved you since the first meow... <br>
-            You're the purr-fect person for me. <br>
-            Will you be mine?
+            To the purr-fect girl...<br>
+            Every meow means <br>
+            I want to be yours forever.
         </div>
     </div>
 
     <div id="lens-frame"></div>
-    <div class="instruction">Tap and drag to decode the meows...</div>
+    
+    <div id="finger-pointer"></div>
+
+    <div class="instruction">DRAG YOUR FINGER TO DECODE</div>
 
     <script>
         const lens = document.getElementById('lens-frame');
         const reveal = document.getElementById('revealed-text');
+        const pointer = document.getElementById('finger-pointer');
+        
+        const lensRadius = 90; // Half of 180px
+        const verticalOffset = 120; // Distance ABOVE the finger
 
-        function updatePosition(e) {
-            // Get coordinates from first touch
-            const touch = e.touches[0];
-            const x = touch.clientX;
-            const y = touch.clientY;
+        function handleMove(e) {
+            const touch = e.touches ? e.touches[0] : e;
+            const fingerX = touch.clientX;
+            const fingerY = touch.clientY;
 
-            // Show lens and reveal effect
+            // Target coordinates for the lens (Move it up)
+            const lensX = fingerX;
+            const lensY = fingerY - verticalOffset;
+
+            // Show elements
             lens.style.display = 'block';
+            pointer.style.display = 'block';
             
-            // Move Lens (Offset by half its width/height to center on finger)
-            lens.style.left = (x - 70) + 'px';
-            lens.style.top = (y - 70) + 'px';
+            // Move the small pointer to where the finger is
+            pointer.style.left = (fingerX - 10) + 'px';
+            pointer.style.top = (fingerY - 10) + 'px';
 
-            // Update Secret Clipping
-            reveal.style.clipPath = `circle(70px at ${x}px ${y}px)`;
+            // Move the lens frame to the offset position
+            lens.style.left = (lensX - lensRadius) + 'px';
+            lens.style.top = (lensY - lensRadius) + 'px';
+
+            // Reveal the secret text at the offset position
+            reveal.style.clipPath = `circle(${lensRadius}px at ${lensX}px ${lensY}px)`;
             
-            // Prevent page from scrolling
-            e.preventDefault();
+            if(e.touches) e.preventDefault();
         }
 
-        // Add Touch Listeners
-        document.addEventListener('touchstart', updatePosition, { passive: false });
-        document.addEventListener('touchmove', updatePosition, { passive: false });
+        // Event listeners for mobile touch
+        document.addEventListener('touchstart', handleMove, { passive: false });
+        document.addEventListener('touchmove', handleMove, { passive: false });
         
-        // Hide lens when touch ends
+        // Cleanup when finger is lifted
         document.addEventListener('touchend', () => {
             lens.style.display = 'none';
+            pointer.style.display = 'none';
             reveal.style.clipPath = `circle(0px at 0% 0%)`;
         });
     </script>
