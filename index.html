@@ -9,7 +9,7 @@
             --pink: #ffafcc;
             --dark-pink: #fb6f92;
             --bg-color: #ffe5ec;
-            --lens-size: 100px; 
+            --lens-size: 110px; /* Slightly larger for the extra text */
         }
 
         html, body {
@@ -26,10 +26,9 @@
             align-items: center;
         }
 
-        /* The Heading (Now outside the box) */
         .external-heading {
             margin-top: 50px;
-            font-size: 24px;
+            font-size: 22px;
             color: #c9184a;
             font-weight: 900;
             text-align: center;
@@ -44,10 +43,9 @@
             50% { transform: translateY(-10px); }
         }
 
-        /* The Main Card */
         .container {
             position: absolute;
-            top: 55%; /* Moved down slightly to accommodate heading */
+            top: 55%; 
             left: 50%;
             transform: translate(-50%, -50%);
             width: 85%;
@@ -62,12 +60,11 @@
         .meow-layer {
             font-size: 20px;
             color: var(--dark-pink);
-            line-height: 2;
+            line-height: 2.2;
             user-select: none;
             font-weight: bold;
         }
 
-        /* The Secret Message Layer */
         #revealed-text {
             position: fixed;
             top: 0;
@@ -85,14 +82,13 @@
         }
 
         .secret-content {
-            width: 80%;
+            width: 85%;
             text-align: center;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
-            line-height: 1.6;
+            line-height: 1.4; /* Slightly tighter to fit the lens */
         }
 
-        /* The Glass Lens */
         #lens-frame {
             position: absolute;
             width: var(--lens-size);
@@ -128,7 +124,7 @@
             letter-spacing: 1px;
         }
 
-        .cat-emoji { font-size: 45px; margin-bottom: 10px; }
+        .cat-emoji { font-size: 40px; margin-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -152,7 +148,10 @@
             <div class="secret-content">
                 To the purr-fect girl...<br>
                 Every meow means <br>
-                I want to be yours forever.
+                Khub halumulu korchis.<br>
+                chup chap love you<br>
+                5-6 hampi diye recording<br> 
+                patha.
             </div>
         </div>
     </div>
@@ -167,8 +166,8 @@
         const reveal = document.getElementById('revealed-text');
         const pointer = document.getElementById('finger-pointer');
         
-        const lensRadius = 50; 
-        const verticalOffset = 110; 
+        const lensRadius = 55; /* Half of 110px */
+        const verticalOffset = 120; 
 
         function handleMove(e) {
             const touch = e.touches ? e.touches[0] : e;
