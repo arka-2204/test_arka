@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>A Special Message For You</title>
+    <title>Meow-nication Test</title>
     <style>
         :root {
             --pink: #ffafcc;
             --dark-pink: #fb6f92;
             --bg-color: #ffe5ec;
-            /* Lens is now 100px wide (50px radius) */
             --lens-size: 100px; 
         }
 
@@ -22,18 +21,40 @@
             touch-action: none; 
             background-color: var(--bg-color);
             font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
+        /* The Heading (Now outside the box) */
+        .external-heading {
+            margin-top: 50px;
+            font-size: 24px;
+            color: #c9184a;
+            font-weight: 900;
+            text-align: center;
+            width: 90%;
+            z-index: 2;
+            text-shadow: 2px 2px 0px white;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* The Main Card */
         .container {
             position: absolute;
-            top: 50%;
+            top: 55%; /* Moved down slightly to accommodate heading */
             left: 50%;
             transform: translate(-50%, -50%);
             width: 85%;
             background: white;
             padding: 40px 20px;
             border-radius: 30px;
-            box-shadow: 0 15px 30px rgba(251, 111, 146, 0.2);
+            box-shadow: 0 15px 35px rgba(251, 111, 146, 0.25);
             text-align: center;
             z-index: 1;
         }
@@ -46,6 +67,7 @@
             font-weight: bold;
         }
 
+        /* The Secret Message Layer */
         #revealed-text {
             position: fixed;
             top: 0;
@@ -70,14 +92,15 @@
             line-height: 1.6;
         }
 
+        /* The Glass Lens */
         #lens-frame {
             position: absolute;
             width: var(--lens-size);
             height: var(--lens-size);
-            border: 4px solid var(--dark-pink);
+            border: 5px solid var(--dark-pink);
             border-radius: 50%;
             pointer-events: none;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             z-index: 10;
             display: none;
             background: rgba(255, 255, 255, 0.1);
@@ -96,22 +119,26 @@
 
         .instruction {
             position: fixed;
-            bottom: 30px;
+            bottom: 40px;
             width: 100%;
             text-align: center;
             font-size: 13px;
             color: #fb6f92;
             font-weight: bold;
-            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .cat-emoji { font-size: 40px; margin-bottom: 10px; }
+        .cat-emoji { font-size: 45px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
+    <div class="external-heading">
+        Aj tor meow-nication er test hobe 🐾
+    </div>
+
     <div class="container">
-        <div class="cat-emoji">🐾</div>
+        <div class="cat-emoji">🐱</div>
         <div class="meow-layer">
             meow meow meowww! <br>
             meow meow meow meow. <br>
@@ -120,28 +147,28 @@
     </div>
 
     <div id="revealed-text">
-        <div class="secret-content">
+        <div class="container" style="box-shadow: none; border: none; background: transparent;">
             <div class="cat-emoji">😻</div>
-            To the purr-fect girl...<br>
-            Every meow means <br>
-            I want to be yours forever.
+            <div class="secret-content">
+                To the purr-fect girl...<br>
+                Every meow means <br>
+                I want to be yours forever.
+            </div>
         </div>
     </div>
 
     <div id="lens-frame"></div>
     <div id="finger-pointer"></div>
 
-    <div class="instruction">Hold and drag to decode</div>
+    <div class="instruction">DRAG TO START THE TEST</div>
 
     <script>
         const lens = document.getElementById('lens-frame');
         const reveal = document.getElementById('revealed-text');
         const pointer = document.getElementById('finger-pointer');
         
-        // As requested:
         const lensRadius = 50; 
-        // Adjusted vertical offset for a smaller lens:
-        const verticalOffset = 100; 
+        const verticalOffset = 110; 
 
         function handleMove(e) {
             const touch = e.touches ? e.touches[0] : e;
